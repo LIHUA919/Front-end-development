@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emoji Gravity and Collision</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #f0f0f0; }
+        canvas { display: block; }
+        .emoji { position: absolute; font-size: 24px; }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const emojis = ['😊', '😂', '😍', '😎', '🥳', '🤩', '😜', '😉', '😇', '🥳'];
+        const particles = [];
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function getRandomEmoji() {
+            return emojis[getRandomInt(0, emojis.length - 1)];
+        }
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = getRandomInt(16, 32);
+                this.speedY = getRandomInt(1, 5);
+                this.speedX = getRandomInt(-3, 3);
+                this.emoji = getRandomEmoji();
+                this.opacity = 1;
+            }
+
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                this.speedY += 0.1; // gravity effect
+                this.opacity -= 0.01;
+
+                if (this.y > canvas.height) {
+                    this.y = canvas.height;
+                    this.speedY *= -0.7; // bounce effect
+                }
+
+                if (this.x > canvas.width || this.x < 0) {
+                    this.speedX *= -0.7; // bounce effect
+                }
+            }
+
+            draw() {
+                ctx.globalAlpha = this.opacity;
+                ctx.font = `${this.size}px Arial`;
+                ctx.fillText(this.emoji, this.x, this.y);
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        function handleParticles() {
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+
+                if (particles[i].opacity <= 0) {
+                    particles.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+
+        function createParticles(x, y) {
+            const numberOfParticles = getRandomInt(5, 15);
+            for (let i = 0; i < numberOfParticles; i++) {
+                particles.push(new Particle(x, y));
+            }
+        }
+
+        canvas.addEventListener('click', (event) => {
+            createParticles(event.clientX, event.clientY);
+        });
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            handleParticles();
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
