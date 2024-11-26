@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f0f0f0; margin: 0; }
+        button { padding: 15px 30px; font-size: 18px; color: white; background-color: purple; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: darkviolet; }
+        #countdown { font-size: 100px; margin-top: 20px; display: none; color: purple; }
+    </style>
+</head>
+<body>
+    <div>
+        <button onclick="startCountdown()">Qwen, Start!</button>
+        <div id="countdown"></div>
+    </div>
+
+    <script>
+        function startCountdown() {
+            const countdownElement = document.getElementById('countdown');
+            let count = 5;
+
+            document.querySelector('button').disabled = true;
+            countdownElement.style.display = 'block';
+
+            const interval = setInterval(() => {
+                countdownElement.textContent = count;
+                count--;
+
+                if (count < 0) {
+                    clearInterval(interval);
+                    countdownElement.style.display = 'none';
+                    document.querySelector('button').disabled = false;
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
