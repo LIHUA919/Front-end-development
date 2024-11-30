@@ -1,0 +1,14 @@
+# Unity相关
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+Assets/AssetStoreTools*
+
+# Visual Studio缓存
+.vs/
+
+# 编译产物
+*.unitypackage
+*.log
