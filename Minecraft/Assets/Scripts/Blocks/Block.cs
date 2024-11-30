@@ -165,3 +165,37 @@ public class BlockTest
         Assert.IsFalse(stoneBlock.TryDestroy(0.5f));
     }
 }
+
+
+[TestClass]
+public class PlayerInteractionSystemTest
+{
+    private PlayerInteractionSystem _interactionSystem;
+    private ChunkManager _chunkManager;
+
+    [TestInitialize]
+    public void Setup()
+    {
+        var settings = new WorldGenerationSettings();
+        _chunkManager = new ChunkManager(settings);
+        _interactionSystem = new PlayerInteractionSystem(_chunkManager);
+    }
+
+    [TestMethod]
+    public void TestBreakBlock_ValidBlock()
+    {
+        Vector3Int blockPos = new Vector3Int(0, 0, 0);
+        bool result = _interactionSystem.TryBreakBlock(blockPos);
+        
+        Assert.IsTrue(result);
+    }
+
+    [TestMethod]
+    public void TestPlaceBlock_InvalidPosition()
+    {
+        Vector3Int blockPos = new Vector3Int(0, 0, 0);
+        bool result = _interactionSystem.TryPlaceBlock(blockPos, BlockType.Dirt);
+        
+        Assert.IsFalse(result);
+    }
+}
