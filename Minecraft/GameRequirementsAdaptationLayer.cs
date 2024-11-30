@@ -66,3 +66,13 @@ public class GameConfigManager
         }
     }
 }
+
+
+[Serializable]
+public class InteractionConfig
+{
+    // 交互相关配置
+    public float MaxReachDistance = 5f;
+    public int MaxInventorySlots = 36;
+    public bool EnableCreativeMode = false;
+}
