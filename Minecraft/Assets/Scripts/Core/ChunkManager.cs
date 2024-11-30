@@ -58,3 +58,61 @@ public class ChunkManager
         );
     }
 }
+
+
+public class ChunkManager 
+{
+    // 线程安全的区块管理
+    private ConcurrentDictionary<Vector3Int, Block[,,]> loadedChunks = 
+        new ConcurrentDictionary<Vector3Int, Block[,,]>();
+    
+    private WorldGenerator worldGenerator;
+    private const int ChunkSize = 16;
+
+    // 依赖注入世界生成设置
+    public ChunkManager(WorldGenerationSettings settings)
+    {
+        worldGenerator = new WorldGenerator(settings);
+    }
+
+    public Block[,,] LoadChunk(Vector3Int chunkPosition)
+    {
+        return loadedChunks.GetOrAdd(chunkPosition, 
+            pos => worldGenerator.GenerateChunk(pos, ChunkSize));
+    }
+
+    public Block GetBlockAtPosition(Vector3Int worldPosition)
+    {
+        Vector3Int chunkPosition = GetChunkPosition(worldPosition);
+        
+        if(loadedChunks.TryGetValue(chunkPosition, out Block[,,] chunk))
+        {
+            Vector3Int localPosition = worldPosition - chunkPosition;
+            return chunk[localPosition.x, localPosition.y, localPosition.z];
+        }
+
+        return new Block(BlockType.Air, worldPosition);
+    }
+
+    // 添加区块卸载方法
+    public void UnloadDistantChunks(Vector3Int playerPosition, int renderDistance)
+    {
+        var chunksToRemove = loadedChunks.Keys
+            .Where(chunkPos => Vector3Int.Distance(chunkPos, playerPosition) > renderDistance)
+            .ToList();
+
+        foreach(var chunkPos in chunksToRemove)
+        {
+            loadedChunks.TryRemove(chunkPos, out _);
+        }
+    }
+
+    private Vector3Int GetChunkPosition(Vector3Int worldPosition)
+    {
+        return new Vector3Int(
+            Mathf.FloorToInt(worldPosition.x / (float)ChunkSize) * ChunkSize,
+            Mathf.FloorToInt(worldPosition.y / (float)ChunkSize) * ChunkSize,
+            Mathf.FloorToInt(worldPosition.z / (float)ChunkSize) * ChunkSize
+        );
+    }
+}
