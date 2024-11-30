@@ -138,3 +138,30 @@ public class Block
         return toolStrength >= Hardness;
     }
 }
+
+
+// BlockTest.cs
+[TestClass]
+public class BlockTest 
+{
+    [TestMethod]
+    public void TestBlockCreation()
+    {
+        // 测试方块创建
+        Block grassBlock = new Block(BlockType.Grass, Vector3Int.zero);
+        
+        Assert.AreEqual(BlockType.Grass, grassBlock.Type);
+        Assert.IsFalse(grassBlock.IsTransparent);
+        Assert.IsTrue(grassBlock.CanBeDestroyed);
+    }
+
+    [TestMethod]
+    public void TestBlockDestroy()
+    {
+        Block stoneBlock = new Block(BlockType.Stone, Vector3Int.zero);
+        
+        // 测试方块是否可被破坏
+        Assert.IsTrue(stoneBlock.TryDestroy(2.5f));
+        Assert.IsFalse(stoneBlock.TryDestroy(0.5f));
+    }
+}
