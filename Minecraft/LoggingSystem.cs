@@ -42,3 +42,16 @@ public class GameLogger
         }
     }
 }
+
+
+
+
+public void LogPlayerInteraction(InteractionEvent interaction)
+{
+    string logMessage = $"交互类型: {interaction.Type}, " +
+                        $"位置: {interaction.Position}, " +
+                        $"方块类型: {interaction.BlockType}, " +
+                        $"时间: {interaction.Timestamp}";
+    
+    GameLogger.Instance.LogInfo(logMessage);
+}
